@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>내 웹 관리 허브</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#fff; --ink:#1b2430; --sub:#5b6676; --line:#e2e7ee;
+    --brand:#0b5cad; --brand-soft:#e7f0fa;
+    --ok:#1f8a4c; --test:#b7791f; --arch:#8a94a3; --warn:#c0392b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Pretendard,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:22px 28px 14px;position:sticky;top:0;z-index:5}
+  .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  h1{font-size:20px;margin:0;font-weight:800}
+  .count{color:var(--sub);font-size:13px}
+  .spacer{flex:1}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
+  .btn:hover{border-color:var(--brand);color:var(--brand)}
+  .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .btn.primary:hover{opacity:.9;color:#fff}
+  .search{width:100%;margin-top:14px;padding:11px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px}
+  .search:focus{outline:2px solid var(--brand-soft);border-color:var(--brand)}
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer;color:var(--sub)}
+  .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .sep{width:1px;background:var(--line);margin:0 6px}
+  main{padding:22px 28px 60px;max-width:1280px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;transition:.15s}
+  .card:hover{border-color:#b9c9dd;box-shadow:0 4px 14px rgba(20,40,80,.06)}
+  .card.arch{opacity:.6}
+  .head{display:flex;gap:10px;align-items:center}
+  .fav{width:36px;height:36px;border-radius:9px;background:var(--brand-soft);display:grid;place-items:center;flex:none;overflow:hidden}
+  .fav img{width:22px;height:22px}
+  .ttl{font-weight:700;font-size:15px;line-height:1.3}
+  .cat{font-size:12px;color:var(--sub)}
+  .desc{font-size:13px;color:var(--sub);line-height:1.5;min-height:20px}
+  .badges{display:flex;gap:5px;flex-wrap:wrap}
+  .b{font-size:11px;padding:2px 8px;border-radius:6px;background:#eef1f5;color:var(--sub)}
+  .b.운영{background:#e6f4ec;color:var(--ok)} .b.테스트{background:#fbf1de;color:var(--test)} .b.보관{background:#eceff3;color:var(--arch)}
+  .b.공개{background:var(--brand-soft);color:var(--brand)} .b.내부{background:#f1ecfa;color:#6a3fb5} .b.개인{background:#fdeef3;color:#b03a63}
+  .warn{font-size:12px;color:var(--warn);background:#fdf0ee;border-radius:8px;padding:6px 9px}
+  .url{font-size:11.5px;color:var(--arch);word-break:break-all}
+  .acts{display:flex;gap:6px;margin-top:auto}
+  .acts a,.acts button{flex:1;text-align:center;text-decoration:none;font-size:12.5px;padding:7px 0;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;font-family:inherit}
+  .acts a.open{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .acts button:hover{border-color:var(--brand);color:var(--brand)}
+  .empty{text-align:center;color:var(--sub);padding:60px 0}
+  .summary{display:flex;gap:16px;flex-wrap:wrap;margin-top:28px;font-size:12.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:14px}
+  /* modal */
+  .ov{position:fixed;inset:0;background:rgba(15,25,40,.45);display:none;align-items:center;justify-content:center;z-index:20;padding:16px}
+  .ov.show{display:flex}
+  .modal{background:#fff;border-radius:16px;padding:22px;width:min(560px,100%);max-height:90vh;overflow:auto}
+  .modal h2{margin:0 0 4px;font-size:17px}
+  .modal p.hint{margin:0 0 14px;font-size:13px;color:var(--sub)}
+  .row{display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:center;margin-bottom:8px}
+  .row label{font-size:13px;color:var(--sub)}
+  .row input,.row select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px;width:100%}
+  pre{background:#0f1b2b;color:#d6e4f5;border-radius:10px;padding:12px;font-size:12.5px;overflow:auto;white-space:pre-wrap}
+  .mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+  .qrbox{text-align:center}
+  .qrbox img{width:220px;height:220px;margin:10px auto;display:block}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1b2430;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:30}
+  .toast.show{opacity:1}
+  @media (max-width:600px){header,main{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>내 웹 관리 허브</h1>
+    <span class="count" id="count"></span>
+    <span class="spacer"></span>
+    <button class="btn primary" id="addBtn">＋ 새 웹 등록 코드 만들기</button>
+  </div>
+  <input class="search" id="q" placeholder="이름·설명·태그·URL로 검색">
+  <div class="filters" id="filters"></div>
+</header>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="summary" id="summary"></div>
+</main>
+
+<!-- 등록 코드 생성 -->
+<div class="ov" id="addOv">
+  <div class="modal">
+    <h2>새 웹 등록 코드 만들기</h2>
+    <p class="hint">URL만 넣으면 나머지는 자동으로 채워집니다. 만든 코드를 <b>sites.js</b>의 <code>window.SITES = [</code> 바로 아래에 붙여넣고 저장하세요.</p>
+    <div class="row"><label>URL *</label><input id="fUrl" placeholder="https://sudc1.github.io/새웹/"></div>
+    <div class="row"><label>이름</label><input id="fTitle" placeholder="비우면 주소에서 자동 생성"></div>
+    <div class="row"><label>분류</label><input id="fCat" list="catList" placeholder="예: 경영평가"></div>
+    <datalist id="catList"></datalist>
+    <div class="row"><label>상태</label><select id="fStatus"><option>운영</option><option>테스트</option><option>보관</option></select></div>
+    <div class="row"><label>공개 범위</label><select id="fAud"><option>내부</option><option>공개</option><option>개인</option></select></div>
+    <div class="row"><label>설명</label><input id="fDesc" placeholder="한 줄 설명"></div>
+    <div class="row"><label>태그</label><input id="fTags" placeholder="쉼표로 구분: AI, 보고서"></div>
+    <pre id="out">URL을 입력하세요.</pre>
+    <div class="mfoot">
+      <button class="btn" data-close>닫기</button>
+      <button class="btn primary" id="copyCode">코드 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR -->
+<div class="ov" id="qrOv">
+  <div class="modal qrbox">
+    <h2 id="qrTitle"></h2>
+    <img id="qrImg" alt="QR 코드">
+    <div class="url" id="qrUrl"></div>
+    <div class="mfoot" style="justify-content:center"><button class="btn" data-close>닫기</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="sites.js"></script>
+<script>
+(function(){
+  const SITES = (window.SITES || []).map((s,i)=>({
+    ...s,
+    title: s.title || autoTitle(s.url),
+    category: s.category || "미분류",
+    status: s.status || "운영",
+    audience: s.audience || "내부",
+    platform: s.platform || detectPlatform(s.url),
+    tags: s.tags || [],
+    _i:i
+  }));
+
+  const state = { q:"", cat:"전체", status:"전체" };
+  const $ = id => document.getElementById(id);
+
+  function detectPlatform(u){
+    try{
+      const h = new URL(u).hostname;
+      if(h.endsWith("github.io")) return "GitHub Pages";
+      if(h.endsWith("netlify.app")) return "Netlify";
+      if(h.endsWith("vercel.app")) return "Vercel";
+      if(h.includes("heyzine")) return "Heyzine";
+      if(h.includes("claude")) return "Claude";
+      return h;
+    }catch(e){ return "기타"; }
+  }
+  function autoTitle(u){
+    try{
+      const x = new URL(u);
+      const seg = x.pathname.split("/").filter(Boolean);
+      return seg.length ? decodeURIComponent(seg[seg.length-1]).replace(/\.html?$/,"") : x.hostname;
+    }catch(e){ return u; }
+  }
+  function host(u){ try{ return new URL(u).hostname }catch(e){ return "" } }
+  function esc(s){ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
+
+  function buildFilters(){
+    const cats = ["전체", ...new Set(SITES.map(s=>s.category))];
+    const sts = ["전체","운영","테스트","보관"];
+    $("filters").innerHTML =
+      cats.map(c=>`<span class="chip ${state.cat===c?"on":""}" data-cat="${esc(c)}">${esc(c)}</span>`).join("") +
+      `<span class="sep"></span>` +
+      sts.map(c=>`<span class="chip ${state.status===c?"on":""}" data-st="${c}">${c==="전체"?"모든 상태":c}</span>`).join("");
+    $("catList").innerHTML = cats.filter(c=>c!=="전체").map(c=>`<option value="${esc(c)}">`).join("");
+  }
+
+  function render(){
+    const q = state.q.trim().toLowerCase();
+    const list = SITES.filter(s=>{
+      if(state.cat!=="전체" && s.category!==state.cat) return false;
+      if(state.status!=="전체" && s.status!==state.status) return false;
+      if(!q) return true;
+      return [s.title,s.desc,s.url,s.category,s.platform,...s.tags].join(" ").toLowerCase().includes(q);
+    });
+    $("count").textContent = `전체 ${SITES.length}개 · 표시 ${list.length}개`;
+    $("grid").innerHTML = list.length ? list.map(card).join("") : `<div class="empty">조건에 맞는 웹이 없습니다.</div>`;
+
+    const byPf = {}; SITES.forEach(s=>byPf[s.platform]=(byPf[s.platform]||0)+1);
+    const bySt = {}; SITES.forEach(s=>bySt[s.status]=(bySt[s.status]||0)+1);
+    $("summary").innerHTML =
+      `<span><b>플랫폼</b> ${Object.entries(byPf).map(([k,v])=>`${esc(k)} ${v}`).join(" · ")}</span>`+
+      `<span><b>상태</b> ${Object.entries(bySt).map(([k,v])=>`${k} ${v}`).join(" · ")}</span>`;
+  }
+
+  function card(s){
+    const fav = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host(s.url))}&sz=64`;
+    return `<div class="card ${s.status==="보관"?"arch":""}">
+      <div class="head">
+        <div class="fav"><img src="${fav}" alt="" onerror="this.remove()"></div>
+        <div><div class="ttl">${esc(s.title)}</div><div class="cat">${esc(s.category)}</div></div>
+      </div>
+      <div class="desc">${esc(s.desc||"")}</div>
+      <div class="badges">
+        <span class="b ${esc(s.status)}">${esc(s.status)}</span>
+        <span class="b ${esc(s.audience)}">${esc(s.audience)}</span>
+        <span class="b">${esc(s.platform)}</span>
+        ${s.tags.map(t=>`<span class="b">#${esc(t)}</span>`).join("")}
+      </div>
+      ${s.warn?`<div class="warn">⚠ ${esc(s.warn)}</div>`:""}
+      <div class="url">${esc(s.url)}${s.added?` · 등록 ${esc(s.added)}`:""}</div>
+      <div class="acts">
+        <a class="open" href="${esc(s.url)}" target="_blank" rel="noopener">열기</a>
+        <button data-copy="${s._i}">주소 복사</button>
+        <button data-qr="${s._i}">QR</button>
+      </div>
+    </div>`;
+  }
+
+  function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1600); }
+  async function copy(text,msg){
+    try{ await navigator.clipboard.writeText(text); }
+    catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+    toast(msg||"복사했습니다");
+  }
+
+  // 이벤트
+  $("q").addEventListener("input",e=>{ state.q=e.target.value; render(); });
+  $("filters").addEventListener("click",e=>{
+    const c=e.target.closest(".chip"); if(!c) return;
+    if(c.dataset.cat!==undefined) state.cat=c.dataset.cat;
+    if(c.dataset.st!==undefined) state.status=c.dataset.st;
+    buildFilters(); render();
+  });
+  $("grid").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    if(b.dataset.copy!==undefined){ copy(SITES[b.dataset.copy].url,"주소를 복사했습니다"); }
+    if(b.dataset.qr!==undefined){
+      const s=SITES[b.dataset.qr];
+      $("qrTitle").textContent=s.title; $("qrUrl").textContent=s.url;
+      $("qrImg").src=`https://api.qrserver.com/v1/create-qr-code/?size=440x440&data=${encodeURIComponent(s.url)}`;
+      $("qrOv").classList.add("show");
+    }
+  });
+  document.querySelectorAll(".ov").forEach(ov=>ov.addEventListener("click",e=>{
+    if(e.target===ov || e.target.hasAttribute("data-close")) ov.classList.remove("show");
+  }));
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".ov").forEach(o=>o.classList.remove("show")); });
+
+  // 등록 코드 생성
+  $("addBtn").addEventListener("click",()=>{ $("addOv").classList.add("show"); $("fUrl").focus(); });
+  const today = (()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; })();
+  let lastCode="";
+  function gen(){
+    const url=$("fUrl").value.trim();
+    if(!/^https?:\/\//.test(url)){ $("out").textContent="http:// 또는 https:// 로 시작하는 URL을 입력하세요."; lastCode=""; return; }
+    const dup = SITES.find(s=>s.url.replace(/\/$/,"")===url.replace(/\/$/,""));
+    const tags=$("fTags").value.split(",").map(t=>t.trim()).filter(Boolean);
+    const o={
+      url,
+      title:$("fTitle").value.trim()||autoTitle(url),
+      category:$("fCat").value.trim()||"미분류",
+      status:$("fStatus").value,
+      audience:$("fAud").value,
+      platform:detectPlatform(url),
+      desc:$("fDesc").value.trim(),
+      tags,
+      added:today
+    };
+    lastCode = "  {\n" + Object.entries(o).map(([k,v])=>`    ${k}: ${JSON.stringify(v)}`).join(",\n") + "\n  },";
+    $("out").textContent = (dup?`※ 이미 등록된 주소입니다: ${dup.title}\n\n`:"") + lastCode;
+  }
+  ["fUrl","fTitle","fCat","fStatus","fAud","fDesc","fTags"].forEach(id=>$(id).addEventListener("input",gen));
+  $("copyCode").addEventListener("click",()=>{ if(lastCode) copy(lastCode,"코드를 복사했습니다. sites.js에 붙여넣으세요"); else toast("먼저 URL을 입력하세요"); });
+
+  buildFilters(); render();
+})();
+</script>
+</body>
+</html>
