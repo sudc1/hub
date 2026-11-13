@@ -96,7 +96,7 @@ window.SITES = [
     desc: "아파트 매매가 조회용",
     tags: ["부동산"],
     added: "2026-11-12"
-  }
+  },
  {
     url: "https://sudc1.github.io/photo/",
     title: "사진 선명화·보정",
