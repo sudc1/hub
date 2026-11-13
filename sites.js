@@ -97,4 +97,15 @@ window.SITES = [
     tags: ["부동산"],
     added: "2026-11-12"
   }
+ {
+    url: "https://sudc1.github.io/photo/",
+    title: "사진 선명화·보정",
+    category: "홍보",
+    status: "운영",
+    audience: "내부",
+    platform: "GitHub Pages",
+    desc: "흐린 행사 사진 선명화 및 밝기 보정",
+    tags: ["사진", "보정"],
+    added: "2026-11-13"
+  },  
 ];
