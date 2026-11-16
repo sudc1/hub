@@ -108,4 +108,15 @@ window.SITES = [
     tags: ["사진", "보정"],
     added: "2026-11-13"
   },  
+ {
+    url: "https://sudc1.github.io/monthly/",
+    title: "월간업무보고 작성",
+    category: "업무관리",
+    status: "운영",
+    audience: "내부",
+    platform: "GitHub Pages",
+    desc: "월간업무보고 작성 쉽게",
+    tags: ["업무보고", "월간"],
+    added: "2026-11-16"
+  },  
 ];
