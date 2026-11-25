@@ -118,5 +118,16 @@ window.SITES = [
     desc: "월간업무보고 작성 쉽게",
     tags: ["업무보고", "월간"],
     added: "2026-11-16"
-  },  
+  }, 
+ {
+    url: "https://sudc1.github.io/janganleaflet/",
+    title: "문화강좌 검색기",
+    category: "업무관리",
+    status: "운영",
+    audience: "내부",
+    platform: "GitHub Pages",
+    desc: "문화강좌 검색창",
+    tags: ["문화강좌", "수강신청"],
+    added: "2026-11-25"
+  },     
 ];
